@@ -59,14 +59,12 @@ int IndexOf(const C& container, const T& value)
     return static_cast<int>(std::find(container.begin(), container.end(), value) - container.begin());
 }
 
-// The three white neighbours of a floor tile, counterclockwise (Andy walks on
-// top of the floor and on the outside of the ball, so the handedness matches).
 std::array<Tile, 3> Neighbours(const Tile& tile)
 {
     const auto [m, n, t] = tile;
-    if (0 == t)     // pointing at  90, 210, 330 degrees
+    if (0 == t)    
         return { Tile{ m, n, 1 }, Tile{ m, n - 1, 1 }, Tile{ m + 1, n - 1, 1 } };
-    return { Tile{ m, n + 1, 0 }, Tile{ m - 1, n + 1, 0 }, Tile{ m, n, 0 } };  // 30, 150, 270
+    return { Tile{ m, n + 1, 0 }, Tile{ m - 1, n + 1, 0 }, Tile{ m, n, 0 } };  
 }
 
 Fibre WhichHexagon(const Tile& tile)
