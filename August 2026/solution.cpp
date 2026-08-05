@@ -6,56 +6,6 @@
 #include <array>
 #include <map>
 #include <random>
-/*
- COMPILE WITH C++17
-
- Andy's Afternoon Amble.
-
- THE TWO LANDS
-   Ball.  On the truncated tetrahedron each white hexagon is surrounded by three
-          black triangles alternating with the three OTHER white hexagons, so the
-          hexagon adjacency graph is K4.  On the sphere V-E+F = 4-6+F = 2 gives
-          four triangular faces (the black triangles): K4 with the tetrahedral
-          rotation system.  Turning the same way always closes up after 3 steps.
-   Floor. Deleting the black hexagons (a density 1/3 sublattice) from the tiling
-          leaves every white hexagon with three white neighbours: the honeycomb
-          lattice.  Turning the same way closes up after 6 steps.
-
- THE KEY FACT
-   Andy remembers his turns, and a turn word plus a starting dart determines your
-   position in any 3-regular map.  The honeycomb COVERS the tetrahedral K4 in a
-   way that preserves those turns: the dart group of the honeycomb is the von
-   Dyck group <r,s | r^3, s^2, (rs)^6> and the tetrahedron's is <r,s | r^3, s^2,
-   (rs)^3> = A4, and (rs)^6 = ((rs)^3)^2, so r -> r, s -> s is a surjection.  Its
-   kernel is the deck group (translations by 2*Lambda together with half-turns
-   about hexagon centres), whose four orbits of tiles are the four fibres.  A
-   hexagonal face is fixed by the half-turn about its own centre, so it wraps
-   twice around a triangle downstairs -- confirming the quotient is the SPHERE's
-   K4 and not, say, K4 on a torus.
-
-   So Andy's imagined position on the ball is just the FIBRE of the tile he is
-   really standing on, and since real-home implies home-fibre he is never told
-   "not home" while at home.  He learns the truth exactly when the ball says
-   "home" too early:
-
-        p = 1 - P(the first return to the home fibre lands on the home tile).
-
- THE COLLAPSE TO A HEXAGON
-   Every tile off the home fibre has exactly ONE neighbour on it (its three
-   neighbours carry the three other fibres).  Hence the floor minus the home
-   fibre is 2-regular: a disjoint union of cycles, and they turn out to be single
-   hexagonal rings.  Andy's first step drops him on one such ring, and exactly
-   one tile of that ring -- the one he is standing on -- leaks back to home.  The
-   whole infinite lattice problem is therefore a random walk on a 6-cycle that
-   leaks with probability 1/3 at each tile:
-
-        f0 = 1/3 + (2/3) f1,  f1 = (f0+f2)/3,  f2 = (f1+f3)/3,  f3 = (2/3) f2
-        =>  f0 = 9/20   =>   p = 11/20.
-
- This program derives all of that from the geometry and solves it in exact
- rational arithmetic, then checks the answer with a coupled simulation that runs
- one shared stream of turns on a real truncated tetrahedron and on the floor.
-*/
 
 namespace
 {
