@@ -13,17 +13,13 @@ namespace
     const int MONTE_CARLO_TRIALS = 2000000;
     const unsigned int RANDOM_SEED = 20260804;
 
-    // A white floor tile.  (m, n, t) sits at m*(sqrt3,0) + n*(sqrt3/2,3/2) + t*(0,1).
     using Tile = std::tuple<int, int, int>;
     const Tile HOME{ 0, 0, 0 };
 
-    // Which of the ball's four hexagons a floor tile corresponds to: the four
-    // orbits of the deck group of the covering honeycomb -> K4.
+   
     using Fibre = std::pair<int, int>;
 
-    // The ball's four white hexagons, each adjacent to the other three, listed
-    // counterclockwise as seen from outside.  This is the spherical (tetrahedral)
-    // rotation system -- VerifyFaces() checks that its faces are triangles.
+
     const std::array<std::array<int, 3>, 4> BALL{ { {1,2,3}, {0,3,2}, {0,1,3}, {0,2,1} } };
     const int BALL_HOME = 0;
 }
@@ -81,8 +77,7 @@ Fibre WhichHexagon(const Tile& tile)
 
 bool OnHomeFibre(const Tile& tile) { return WhichHexagon(tile) == WhichHexagon(HOME); }
 
-// Walk around a face by always taking the next neighbour in the cyclic order.
-// Three steps on the ball (triangles), six on the floor (hexagons).
+
 int BallFaceLength()
 {
     const int startFrom{ 0 }, startTo{ BALL[0][0] };
@@ -111,9 +106,7 @@ int FloorFaceLength()
     return length;
 }
 
-// Every tile's three neighbours must carry the three OTHER fibres.  That is the
-// covering property, and it is what forces the floor-minus-home-fibre to be a
-// disjoint union of cycles.
+
 bool VerifyCoveringProperty(int radius)
 {
     for (int m{ -radius }; m <= radius; ++m)
@@ -131,8 +124,6 @@ bool VerifyCoveringProperty(int radius)
     return true;
 }
 
-// Exact law of the first time Andy stands on a home-fibre tile.  If the covering
-// is right this must equal the K4 first-return law (2/3)^(k-2)/3.
 std::vector<Fraction> FibreHitLaw(int steps)
 {
     std::map<std::pair<Tile, Tile>, Fraction> alive{ { { HOME, HOME }, Fraction{ 1 } } };
@@ -160,7 +151,7 @@ std::vector<Fraction> FibreHitLaw(int steps)
     return law;
 }
 
-// The cycle of non-home-fibre tiles that Andy's first step lands him on.
+
 std::vector<Tile> HomeRing()
 {
     const Tile start = Neighbours(HOME)[0];
@@ -180,7 +171,7 @@ std::vector<Tile> HomeRing()
     return ring;
 }
 
-// The unique home-fibre neighbour that each ring tile leaks into.
+
 std::vector<Tile> LeakTargets(const std::vector<Tile>& ring)
 {
     std::vector<Tile> targets;
@@ -190,8 +181,7 @@ std::vector<Tile> LeakTargets(const std::vector<Tile>& ring)
     return targets;
 }
 
-// Random walk on the ring: at each tile 1/3 to leak off it, 1/3 each way around.
-// f[i] = P(the leak happens into the HOME tile | standing on ring tile i).
+
 std::vector<Fraction> SolveRing(const std::vector<Tile>& ring, const std::vector<Tile>& leaks)
 {
     const int size = static_cast<int>(ring.size());
@@ -223,8 +213,7 @@ std::vector<Fraction> SolveRing(const std::vector<Tile>& ring, const std::vector
     return f;
 }
 
-// Independent check: drive a walk on the real truncated tetrahedron and a walk on
-// the floor with ONE shared stream of turns, and see which reaches home first.
+
 double CoupledMonteCarlo(int trials, int& coveringViolations)
 {
     std::mt19937 rng(RANDOM_SEED);
@@ -233,12 +222,12 @@ double CoupledMonteCarlo(int trials, int& coveringViolations)
     coveringViolations = 0;
     for (int t{ 0 }; t < trials; ++t)
     {
-        const int first = turn(rng);                        // the first step records no turn
+        const int first = turn(rng);                        
         int ballPrevious{ BALL_HOME }, ballCurrent{ BALL[BALL_HOME][first] };
         Tile floorPrevious{ HOME }, floorCurrent{ Neighbours(HOME)[first] };
         while (true)
         {
-            const int choice = turn(rng);                   // 0 = back, 1 and 2 = the two turns
+            const int choice = turn(rng);                   
             const int ballNext = BALL[ballCurrent][(IndexOf(BALL[ballCurrent], ballPrevious) + choice) % 3];
             const auto around = Neighbours(floorCurrent);
             const Tile floorNext = around[(IndexOf(around, floorPrevious) + choice) % 3];
@@ -248,7 +237,7 @@ double CoupledMonteCarlo(int trials, int& coveringViolations)
             if (floorCurrent == HOME && ballCurrent != BALL_HOME) { ++coveringViolations; break; }
             if (ballCurrent == BALL_HOME)
             {
-                if (!(floorCurrent == HOME)) ++detected;     // the ball says home, Andy is not
+                if (!(floorCurrent == HOME)) ++detected;     
                 break;
             }
         }
